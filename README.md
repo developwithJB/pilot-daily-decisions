@@ -1,62 +1,137 @@
-# pilot: owned-closet decisions on autopilot
+# Pilot
 
-Pilot is a mobile-first, invite-only wardrobe assistant. It turns a user’s owned, available closet plus weather, normalized Calendar context, wear history, and feedback into one clear daily outfit decision. It also provides exact-garment outfit boards, screenshot-first shopping guidance, and a rolling seven-day plan.
+**A wardrobe decision assistant that answers “What should I wear?” using the clothes you already own.**
 
-## Release modes
+- **Deployed ChatGPT Site:** [sydney-style-brain.developwithjb.chatgpt.site](https://sydney-style-brain.developwithjb.chatgpt.site)
+- **Public source:** [github.com/developwithJB/pilot-daily-decisions](https://github.com/developwithJB/pilot-daily-decisions)
 
-The combined V1 + V2 bundle is compiled off by default:
+> **Deployment access:** The hosted ChatGPT Site is currently owner-only. Signed-out or unapproved visitors will receive an authorization response. You can still run the complete deterministic preview locally without external credentials.
 
-```env
-NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=false
-LIVE_TRY_ON_ENABLED=false
-```
+## What Pilot does
 
-With the bundle off, the app remains a non-persistent generic product preview. Starter garments are local generic assets and are never written to a user’s closet or used by authenticated recommendations.
+Pilot combines four kinds of context:
 
-With the bundle on, every personal screen stops at invite authentication and uses Supabase Auth, Postgres, and private Storage. Live AI try-on remains independently disabled; the launch returns a truthful, interactive 360° exact-garment board labeled **Outfit preview**. The reverse verifies the selected piece list and does not invent garment backs or claim to be a simulated body view.
+- the weather and the user’s plans;
+- garments that are owned, available, and appropriate;
+- recent wear history and style/temperature feedback; and
+- shopping candidates supplied as screenshots.
 
-## Local setup
+It turns that context into a small set of useful decisions:
+
+- **Today:** three ranked outfit options with one clear recommendation;
+- **Week:** a rolling seven-day outfit plan;
+- **Try On:** an exact-piece outfit board with an honest, interactive 360° presentation;
+- **Closet:** individual garment entry, bulk scanning, laundry state, and removal;
+- **History:** saved outfit snapshots and lightweight feedback; and
+- **Shopping:** Buy, Save, or Skip guidance based on what the closet actually needs.
+
+Pilot is not a generic fashion feed. The production design only recommends garments the user owns and can wear, and it never presents a flat outfit board as a photorealistic body simulation.
+
+## Why it exists
+
+Getting dressed is a repeated decision spread across weather, calendar context, laundry, outfit repetition, personal taste, and missing wardrobe categories. Most wardrobe apps store clothes or inspire purchases; they do not make the daily decision.
+
+Pilot is designed to:
+
+- reduce morning decision fatigue;
+- help people get more value from clothes they already own;
+- prevent unnecessary or duplicative purchases;
+- learn from simple feedback without turning dressing into data entry; and
+- make recommendation and try-on limitations explicit rather than overstating AI output.
+
+## Try the deployed Site
+
+Open [the deployed ChatGPT Site](https://sydney-style-brain.developwithjb.chatgpt.site) and sign in with an account that has been granted access.
+
+The recommended walkthrough is:
+
+1. Start on **Today** and compare the three proposed outfits.
+2. Open **Try On** from the selected look.
+3. Swap an exact garment, then use the draggable 360° board to verify the selected pieces.
+4. Open **Week** to see how outfits rotate across upcoming days.
+5. Review **Closet** and **History** to see availability, saved wear snapshots, and feedback.
+6. Use the shopping entry point to test Buy, Save, or Skip guidance.
+
+The current hosted presentation uses deterministic sample data. Live AI try-on is disabled.
+
+## Run it locally
+
+### Requirements
+
+- Node.js 22.13 or newer
+- npm
+
+### Start the credential-free preview
 
 ```bash
+git clone https://github.com/developwithJB/pilot-daily-decisions.git
+cd pilot-daily-decisions
 cp .env.example .env.local
 npm install
 npm run dev
 ```
 
-Do not enable the combined bundle until migrations `0001` through `0004_demo_hardening.sql` are applied and the Supabase URL plus publishable key are configured. Migration `0004` adds the wear, feedback, and shopping idempotency constraints required by the current APIs.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Production data and auth
+The checked-in defaults run the safe deterministic preview:
 
-- Cookie-based PKCE clients are request-scoped through `@supabase/ssr`.
-- Authorization derives from `auth.getUser()`; client user IDs and `getSession()` are not trusted.
-- Magic links use `shouldCreateUser: false`; operators invite accounts with `npm run invite -- user@example.com`.
-- Garments, shopping screenshots, reference photos, and try-on results use private buckets and five-minute signed URLs.
-- Storage deletion happens before database deletion. Failed work remains queryable as a retryable deletion request.
-- Unsaved shopping screenshots and try-on results expire after 24 hours once an external scheduler is configured to call the protected maintenance route. Scheduler setup and a production smoke invocation are release-gate requirements.
-
-## Core routes
-
-- `/` — owned-closet daily decision and shopping entry point
-- `/week` — rolling seven-day decisions
-- `/try-on` — build an exact outfit or open its draggable 360° verification board
-- `/closet` — add one item, bulk scan, laundry, and removal
-- `/history` — immutable wear snapshots and feedback
-- `/settings/model` — private reference-photo controls
-
-The authenticated APIs are documented in [Combined launch architecture](docs/COMBINED_LAUNCH.md).
-
-## Existing-data cutover
-
-The D1/R2 migration is explicit and dry-run first:
-
-```bash
-npm run migrate:d1 -- --export /absolute/path/export.json --map /absolute/path/user-map.json
-npm run migrate:d1 -- --export /absolute/path/export.json --map /absolute/path/user-map.json --apply
+```env
+NEXT_PUBLIC_DEMO_MODE=true
+NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=false
+TRY_ON_PROVIDER=mock
+LIVE_TRY_ON_ENABLED=false
 ```
 
-Freeze old writes only after dry-run verification. Keep the encrypted read-only backup for 14 days; remove the legacy bindings after migration sign-off. The current hosting file intentionally retains D1/R2 bindings for this rollback window.
+This mode uses bundled generic garments and browser/session state. It does not require Supabase, Google Calendar, or an OpenAI API key, and it does not write sample garments into a production closet.
 
-## Release gate
+## How the application works
+
+1. **Context is normalized.** Weather, calendar signals, closet availability, wear history, and feedback are converted into a small decision context.
+2. **Eligibility is enforced first.** Inactive, unavailable, unsuitable, or unowned garments are excluded before ranking.
+3. **Deterministic rules rank outfits.** The engine balances weather, formality, occasion, rotation, and prior feedback.
+4. **The server remains authoritative.** Authenticated production flows resolve user identity, owned garment IDs, storage paths, and recommendation state server-side.
+5. **Outputs preserve provenance.** History stores immutable garment snapshots, and the exact-piece preview verifies the selected list instead of inventing unavailable views.
+
+The primary interface lives in `app/SydneyApp.tsx`; recommendation rules are in `lib/recommendation.ts` and `lib/outfit-engine.ts`; authenticated domain logic is in `lib/pilot-server.ts`.
+
+## Main routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Today’s owned-closet decision and shopping entry point |
+| `/week` | Rolling seven-day outfit plan |
+| `/try-on` | Exact outfit builder and interactive verification board |
+| `/closet` | Garment entry, bulk scan, laundry, and removal |
+| `/history` | Saved wear snapshots and feedback |
+| `/settings/model` | Private reference-photo controls |
+
+## Production mode
+
+The authenticated roadmap bundle is intentionally off by default. Production mode adds invite-only Supabase authentication, Postgres persistence, private Storage, calendar integration, and server-authoritative APIs.
+
+Before enabling `NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=true`:
+
+1. Configure the required values described in `.env.example`.
+2. Apply Supabase migrations `0001` through `0004_demo_hardening.sql`.
+3. Run the two-user RLS and private Storage isolation rehearsal.
+4. Configure and smoke-test the external scheduler for the protected retention endpoint.
+5. Complete a final production smoke test.
+
+Live image generation is a separate gate. It requires `LIVE_TRY_ON_ENABLED=true`, a configured provider, server-only credentials, private result storage, and explicit privacy review.
+
+See [Combined launch architecture](docs/COMBINED_LAUNCH.md) and [Privacy notes](docs/V2_PRIVACY_NOTES.md) before configuring production services.
+
+## Security and privacy model
+
+- Cookie-based PKCE clients are request-scoped through `@supabase/ssr`.
+- Authorization derives from `auth.getUser()`; client-supplied user IDs and `getSession()` are not trusted.
+- Magic links do not create arbitrary accounts; operators invite approved users.
+- Garments, shopping screenshots, reference photos, and try-on results use private buckets and short-lived signed URLs.
+- Storage deletion happens before database deletion, with retryable deletion records for failed work.
+- Unsaved private media is designed to expire after 24 hours once the external retention scheduler is configured.
+- Secrets belong in ignored local environment files or the hosting platform—not in source control.
+
+## Tests
 
 ```bash
 npm run typecheck
@@ -65,8 +140,13 @@ npm test
 npm run test:e2e
 ```
 
-Use a unique `PLAYWRIGHT_PORT` for release runs. Reusing an existing server is opt-in through `PLAYWRIGHT_REUSE_SERVER=true` so stale builds cannot satisfy the gate.
+`npm test` performs a production build before running the unit and integration suite. Playwright runs mobile and desktop projects against a fresh production server by default.
 
-For the Thursday demo, use the disabled-bundle deterministic story on one pre-authenticated, preloaded desktop browser. The Sites deployment is owner-only unless access is deliberately widened. Keep a local production build and the 60–90 second video ready; do not refresh if venue connectivity fails.
+## Additional documentation
 
-See [Testing](TESTING.md) and [Release notes](docs/RELEASE_NOTES.md). A local pass does not replace the Supabase migration/RLS rehearsal, two-user object-isolation test, privacy review, or production smoke test.
+- [Testing and demo runbook](TESTING.md)
+- [Release notes](docs/RELEASE_NOTES.md)
+- [Combined launch architecture](docs/COMBINED_LAUNCH.md)
+- [V2 implementation summary](docs/V2_IMPLEMENTATION_SUMMARY.md)
+- [Image pipeline](docs/V2_IMAGE_PIPELINE.md)
+- [Privacy notes](docs/V2_PRIVACY_NOTES.md)
