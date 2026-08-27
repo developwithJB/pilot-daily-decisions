@@ -5,7 +5,7 @@
 - **Deployed ChatGPT Site:** [sydney-style-brain.developwithjb.chatgpt.site](https://sydney-style-brain.developwithjb.chatgpt.site)
 - **Public source:** [github.com/developwithJB/pilot-daily-decisions](https://github.com/developwithJB/pilot-daily-decisions)
 
-> **Deployment access:** The hosted ChatGPT Site is currently owner-only. Signed-out or unapproved visitors will receive an authorization response. You can still run the complete deterministic preview locally without external credentials.
+> **Deployment access:** The hosted ChatGPT Site is public and runs the deterministic sample experience. It does not require setup or external credentials. The authenticated production bundle and live AI try-on remain disabled.
 
 ## What Pilot does
 
@@ -41,7 +41,7 @@ Pilot is designed to:
 
 ## Try the deployed Site
 
-Open [the deployed ChatGPT Site](https://sydney-style-brain.developwithjb.chatgpt.site) and sign in with an account that has been granted access.
+Open [the deployed ChatGPT Site](https://sydney-style-brain.developwithjb.chatgpt.site). No local setup is required.
 
 The recommended walkthrough is:
 
