@@ -28,6 +28,6 @@
 
 ## Deployment state
 
-The code is designed to deploy with the combined bundle disabled. Production activation requires public Supabase configuration, application of migrations `0001`–`0004`, a two-user RLS/Storage rehearsal, migration sign-off, and a final production smoke test. Live AI try-on stays off. The Sites host remains owner-only until access is explicitly widened.
+The code is designed to deploy with the combined bundle disabled. Production activation requires public Supabase configuration, application of migrations `0001`–`0004`, a two-user RLS/Storage rehearsal, migration sign-off, and a final production smoke test. Live AI try-on stays off. The version 16 Sites host was opened as a public, non-persistent preview on August 27, 2026; widening access did not activate the authenticated bundle.
 
 The protected retention endpoint is implemented, but the hosting platform does not supply a scheduler in this repository. An external scheduler using `CRON_SECRET` must be configured and smoke-tested before the authenticated bundle is activated.

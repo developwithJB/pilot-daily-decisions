@@ -38,7 +38,7 @@ export async function GET(request: Request) {
   try {
     const headers = {
       "User-Agent":
-        "PilotDailyDecisions/2.0 github.com/developwithjbhh/pilot-daily-decisions",
+        "PilotDailyDecisions/2.0 github.com/developwithJB/pilot-daily-decisions",
       Accept: "application/geo+json",
     };
     const point = await fetch(`https://api.weather.gov/points/${lat},${lon}`, { headers, cache:"no-store", signal:AbortSignal.timeout(5000) });

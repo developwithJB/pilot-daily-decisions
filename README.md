@@ -144,6 +144,7 @@ npm run test:e2e
 
 ## Additional documentation
 
+- [Public share pack](docs/SHARE_PACK.md)
 - [Testing and demo runbook](TESTING.md)
 - [Release notes](docs/RELEASE_NOTES.md)
 - [Combined launch architecture](docs/COMBINED_LAUNCH.md)
