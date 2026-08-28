@@ -1,5 +1,17 @@
 # Combined V1 + V2 release notes
 
+## Professional product foundation — August 27, 2026
+
+- Added a resumable five-step onboarding flow for weather, calendar, optional reference photos, closet setup, and readiness review.
+- Added credential-free Open-Meteo and manual weather, local privacy-minimized ICS import, and explicit skip/retry paths.
+- Added versioned provider contracts and safe demo/disabled adapters across the external integration boundary.
+- Added labeled starter wardrobes, an empty-closet path, and tests proving sample inventory is never treated as owned.
+- Added a real Three.js asset viewer with front/side/back/reset controls, a generic local fixture, and prominent fit/body-simulation limitations.
+- Added owner-scoped onboarding and 3D schema, private Storage policy, operations/privacy documentation, CI, Dependabot, and open-source community files.
+- Updated the React, Vinext, Vite, and Cloudflare toolchain to remove all known production dependency advisories.
+
+The public deployment remains a deterministic, non-persistent demonstration. Authenticated Supabase, Google OAuth, live AI try-on, and production 3D generation remain independently gated and disabled by default.
+
 ## Added
 
 - Invite-only Supabase magic-link auth and request-scoped cookie PKCE clients.
@@ -28,6 +40,6 @@
 
 ## Deployment state
 
-The code is designed to deploy with the combined bundle disabled. Production activation requires public Supabase configuration, application of migrations `0001`–`0004`, a two-user RLS/Storage rehearsal, migration sign-off, and a final production smoke test. Live AI try-on stays off. The version 16 Sites host was opened as a public, non-persistent preview on August 27, 2026; widening access did not activate the authenticated bundle.
+The code is designed to deploy with the combined bundle disabled. Production activation requires public Supabase configuration, application of migrations `0001`–`0005`, a two-user RLS/Storage rehearsal, migration sign-off, and a final production smoke test. Live AI try-on and production 3D generation stay off. The public Sites host remains a non-persistent preview; widening access does not activate the authenticated bundle.
 
 The protected retention endpoint is implemented, but the hosting platform does not supply a scheduler in this repository. An external scheduler using `CRON_SECRET` must be configured and smoke-tested before the authenticated bundle is activated.

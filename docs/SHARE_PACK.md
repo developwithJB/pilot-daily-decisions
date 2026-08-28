@@ -6,7 +6,7 @@
 
 - **Live demo:** [sydney-style-brain.developwithjb.chatgpt.site](https://sydney-style-brain.developwithjb.chatgpt.site)
 - **Source:** [github.com/developwithJB/pilot-daily-decisions](https://github.com/developwithJB/pilot-daily-decisions)
-- **Latest deployed app:** version 16 at commit `c6b68ab`, deployed August 24, 2026
+- **Latest deployed app:** use the public Site link above; Sites deployment history is the source of truth for release numbers.
 
 The public deployment runs the safe, non-persistent preview. The invite-only Supabase bundle and live AI try-on remain disabled unless an operator explicitly configures and activates them.
 

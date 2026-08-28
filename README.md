@@ -7,6 +7,8 @@
 
 > **Deployment access:** The hosted ChatGPT Site is public and runs the deterministic sample experience. It does not require setup or external credentials. The authenticated production bundle and live AI try-on remain disabled.
 
+> **Current release:** The public demo includes the five-step guided setup, credential-free Open-Meteo and manual weather, privacy-minimized calendar fallbacks, labeled starter wardrobes, and the disclosed interactive 3D fixture. Production photo, OAuth, AI image, and 3D providers remain off until an operator completes the documented privacy and isolation gates.
+
 Licensed under the [MIT License](LICENSE). Contributions are welcome; start with [CONTRIBUTING.md](CONTRIBUTING.md) and report vulnerabilities through the private process in [SECURITY.md](SECURITY.md).
 
 ## What Pilot does
