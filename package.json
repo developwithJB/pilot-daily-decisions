@@ -13,6 +13,7 @@
     "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "check": "npm run typecheck && npm run lint && npm test",
     "db:generate": "drizzle-kit generate",
     "migrate:d1": "node scripts/migrate-d1-to-supabase.mjs",
     "invite": "node scripts/invite-user.mjs"
@@ -23,7 +24,8 @@
     "drizzle-orm": "0.45.2",
     "lucide-react": "^0.468.0",
     "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react-dom": "19.2.6",
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
@@ -36,6 +38,7 @@
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "@types/three": "^0.180.0",
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
     "drizzle-kit": "0.31.10",

@@ -41,6 +41,19 @@ test("server-renders each V2 route without dead ends", async () => {
   }
 });
 
+test("server-renders guided onboarding and the disclosed 3D preview", async () => {
+  const [onboarding, connections, avatar] = await Promise.all([
+    render("/onboarding").then((response) => response.text()),
+    render("/settings/connections").then((response) => response.text()),
+    render("/avatar").then((response) => response.text()),
+  ]);
+  assert.match(onboarding, /Dress for the day ahead/);
+  assert.match(onboarding, /Private, guided setup/);
+  assert.match(connections, /Connections &amp; setup/);
+  assert.match(avatar, /A real 3D viewer with honest limits/);
+  assert.match(avatar, /What it is not/);
+});
+
 test("high-value screens ship clear, task-specific CTAs", async () => {
   const [week, closet, history, setup] = await Promise.all([
     render("/week").then((response) => response.text()),
@@ -118,12 +131,12 @@ test("ships local assets, portable second-brain setup, privacy schema, and provi
   assert.match(migration, /try_on_results/);
   assert.match(migration, /enable row level security/g);
   assert.match(migration, /auth\.uid\(\) = user_id/g);
-  assert.match(provider, /interface TryOnProvider/);
+  assert.match(provider, /TryOnProvider/);
   assert.match(provider, /gpt-image-2/);
   assert.match(layout, /pilot: life’s daily decisions on autopilot/);
   assert.match(packageJson, /"name": "pilot-daily-decisions"/);
-  assert.match(weatherRoute, /api\.weather\.gov/);
-  assert.match(weatherRoute, /source:"unavailable"/);
+  assert.match(weatherRoute, /getWeatherProvider/);
+  assert.match(weatherRoute, /source: "unavailable"/);
   assert.doesNotMatch(weatherRoute, /demoWeather|departureFeelsLike: 61|dayHigh: 68/);
   assert.match(appSource, /pilot-profile-v1/);
   assert.match(appSource, /Export my Pilot Pack/);

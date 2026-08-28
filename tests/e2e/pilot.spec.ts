@@ -145,3 +145,22 @@ test("Thursday story completes from decision through learning", async ({
   ).toBeVisible();
   expect(authFailures).toEqual([]);
 });
+
+test("guided setup completes with credential-free fallbacks", async ({ page }) => {
+  await page.goto("/onboarding");
+  await expect(page.getByRole("heading", { name: "Dress for the day ahead" })).toBeVisible();
+  await page.getByRole("button", { name: "Enter manually" }).click();
+  await page.getByLabel("Temperature °F").fill("67");
+  await page.getByLabel("Rain chance %").fill("25");
+  await page.getByRole("button", { name: "Check weather" }).click();
+  await expect(page.getByText("Weather is ready.")).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("Or describe the day").fill("Office, presentation, then dinner");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByRole("heading", { name: "Optional reference photos" })).toBeVisible();
+  await page.getByRole("button", { name: "Continue or skip" }).click();
+  await page.getByRole("button", { name: "Start empty Add only your real garments" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByRole("heading", { name: "Your daily decision system is ready" })).toBeVisible();
+  await expect(page.getByText("Empty personal closet")).toBeVisible();
+});

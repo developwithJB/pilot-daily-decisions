@@ -1,4 +1,6 @@
-export interface BackgroundRemovalProvider { remove(imageUrl: string): Promise<{ provider: string; imageUrl?: string; imageDataUrl?: string }>; }
+import type { BackgroundRemovalProvider } from "./contracts";
+
+export type { BackgroundRemovalProvider } from "./contracts";
 
 class MockBackgroundRemovalProvider implements BackgroundRemovalProvider {
   async remove(imageUrl: string) { return { provider: "mock", imageUrl }; }

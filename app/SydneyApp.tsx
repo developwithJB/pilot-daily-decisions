@@ -60,6 +60,7 @@ import {
 } from "../lib/demo-data";
 import type { DailyContext, OutfitRecommendation } from "../lib/pilot-domain";
 import { calculateOutfitLayout, resolveGarmentConflict } from "../lib/try-on";
+import { getStarterWardrobe, type StarterWardrobeChoice } from "../lib/starter-wardrobes";
 import WardrobeScanner, { WardrobeLearning } from "./WardrobeScanner";
 
 export type AppTab =
@@ -94,7 +95,7 @@ type CalendarState = {
 };
 type WeatherHour = { time: string; temperature: number };
 type WeatherState = {
-  source: "nws";
+  source: "open-meteo" | "manual";
   location: string;
   currentTemperature: number;
   currentFeelsLike: number;
@@ -307,6 +308,20 @@ export default function SydneyApp({
     colorCounts: {},
   });
 
+  useEffect(() => {
+    if (ROADMAP_ENABLED) return;
+    try {
+      const setup = JSON.parse(localStorage.getItem("pilot-onboarding-v1") || "{}") as { wardrobe?: StarterWardrobeChoice };
+      if (!setup.wardrobe) return;
+      const examples = getStarterWardrobe(setup.wardrobe);
+      queueMicrotask(() => {
+        setCloset(examples);
+        setSelectedGarments(getLookGarments(recommendations[0], examples));
+      });
+    } catch {
+      // A malformed local setup record should never block the deterministic demo.
+    }
+  }, []);
   useEffect(() => {
     if (!ROADMAP_ENABLED) return;
     let cancelled = false;
@@ -3379,6 +3394,10 @@ function ModelScreen({
           </p>
         </div>
       </section>
+
+      <a className="guided-setup-link" href="/settings/connections">
+        <Sparkles /> Open the five-step guided setup <ChevronRight />
+      </a>
 
       <section className="setup-progress">
         <div>

@@ -1,0 +1,6 @@
+{
+  "asset": { "version": "2.0", "generator": "pilot deterministic demo fixture" },
+  "scene": 0,
+  "scenes": [{ "name": "Empty fixture triggers the procedural privacy-safe mannequin", "nodes": [0] }],
+  "nodes": [{ "name": "pilot-demo-avatar-root" }]
+}

@@ -1,16 +1,8 @@
 import { buildMirrorPrompt, buildScenePrompt } from "../try-on";
-import type { Garment } from "../demo-data";
+import type { GarmentRenderInput, MirrorTryOnInput, SceneTryOnInput, TryOnProvider, TryOnProviderOutput } from "./contracts";
 
-export type TryOnOutput = { provider: string; model: string; renderMode?: "image" | "composition"; imageDataUrl?: string; imagePath?: string };
-export type MirrorTryOnInput = { personImageUrl: string; garmentImageUrls: string[]; garments: Garment[]; event: string; weather: string };
-export type SceneTryOnInput = { mirrorImageUrl: string; scene: string; lookId?: string };
-export type GarmentRenderInput = { imageUrl: string; garmentName: string };
-
-export interface TryOnProvider {
-  generateMirror(input: MirrorTryOnInput): Promise<TryOnOutput>;
-  generateScene(input: SceneTryOnInput): Promise<TryOnOutput>;
-  renderGarment(input: GarmentRenderInput): Promise<TryOnOutput>;
-}
+export type TryOnOutput = TryOnProviderOutput;
+export type { GarmentRenderInput, MirrorTryOnInput, SceneTryOnInput, TryOnProvider } from "./contracts";
 
 class MockTryOnProvider implements TryOnProvider {
   async generateMirror(input: MirrorTryOnInput): Promise<TryOnOutput> { void input; return { provider:"mock",model:"exact-composition-preview",renderMode:"composition" }; }
