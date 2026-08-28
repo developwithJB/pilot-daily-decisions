@@ -7,6 +7,8 @@
 
 > **Deployment access:** The hosted ChatGPT Site is public and runs the deterministic sample experience. It does not require setup or external credentials. The authenticated production bundle and live AI try-on remain disabled.
 
+Licensed under the [MIT License](LICENSE). Contributions are welcome; start with [CONTRIBUTING.md](CONTRIBUTING.md) and report vulnerabilities through the private process in [SECURITY.md](SECURITY.md).
+
 ## What Pilot does
 
 Pilot combines four kinds of context:
@@ -54,6 +56,8 @@ The recommended walkthrough is:
 
 The current hosted presentation uses deterministic sample data. Live AI try-on is disabled.
 
+New installations can also open `/onboarding` for a five-step setup: weather, calendar, optional private reference photos, closet choice, and readiness review. Every stage can be completed without paid credentials or skipped safely.
+
 ## Run it locally
 
 ### Requirements
@@ -91,6 +95,7 @@ This mode uses bundled generic garments and browser/session state. It does not r
 3. **Deterministic rules rank outfits.** The engine balances weather, formality, occasion, rotation, and prior feedback.
 4. **The server remains authoritative.** Authenticated production flows resolve user identity, owned garment IDs, storage paths, and recommendation state server-side.
 5. **Outputs preserve provenance.** History stores immutable garment snapshots, and the exact-piece preview verifies the selected list instead of inventing unavailable views.
+6. **Providers stay replaceable.** Versioned weather, calendar, image, extraction, try-on, avatar, and fitting contracts keep vendor payloads and credentials behind server boundaries.
 
 The primary interface lives in `app/SydneyApp.tsx`; recommendation rules are in `lib/recommendation.ts` and `lib/outfit-engine.ts`; authenticated domain logic is in `lib/pilot-server.ts`.
 
@@ -104,6 +109,22 @@ The primary interface lives in `app/SydneyApp.tsx`; recommendation rules are in 
 | `/closet` | Garment entry, bulk scan, laundry, and removal |
 | `/history` | Saved wear snapshots and feedback |
 | `/settings/model` | Private reference-photo controls |
+| `/onboarding` | Resumable five-stage guided setup |
+| `/settings/connections` | Revisit weather, calendar, photo, and closet setup |
+| `/avatar` | Three.js GLTF/GLB/VRM viewer with a generic local fixture and explicit limitations |
+
+## Provider matrix
+
+| Capability | Credential-free default | Optional production provider | Required fallback |
+| --- | --- | --- | --- |
+| Weather | Open-Meteo or manual entry | Open-Meteo server adapter | Manual temperature/rain |
+| Calendar | Local ICS normalization or manual plan | Google OAuth, read only | Skip or manual plan |
+| Closet extraction | Deterministic demo scanner/correction | Server-side vision adapter | Manual correction/entry |
+| Background removal | Original cutout/mock | rembg HTTP adapter | Original private image |
+| Image try-on | Exact composition board | OpenAI image adapter | Exact composition |
+| 3D avatar | Generic local Three.js fixture | `Avatar3DProvider` adapter | Honest disabled state |
+
+Provider and flag guidance is in [Provider development](docs/PROVIDER_DEVELOPMENT.md). Live provider credentials are server-only and provider flags never replace authorization.
 
 ## Production mode
 
@@ -112,7 +133,7 @@ The authenticated roadmap bundle is intentionally off by default. Production mod
 Before enabling `NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=true`:
 
 1. Configure the required values described in `.env.example`.
-2. Apply Supabase migrations `0001` through `0004_demo_hardening.sql`.
+2. Apply Supabase migrations `0001` through `0005_professional_product_foundation.sql`.
 3. Run the two-user RLS and private Storage isolation rehearsal.
 4. Configure and smoke-test the external scheduler for the protected retention endpoint.
 5. Complete a final production smoke test.
@@ -120,6 +141,8 @@ Before enabling `NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=true`:
 Live image generation is a separate gate. It requires `LIVE_TRY_ON_ENABLED=true`, a configured provider, server-only credentials, private result storage, and explicit privacy review.
 
 See [Combined launch architecture](docs/COMBINED_LAUNCH.md) and [Privacy notes](docs/V2_PRIVACY_NOTES.md) before configuring production services.
+
+Production 3D generation is intentionally disabled. The included viewer and local fixture test interaction only; they do not represent a user’s body. Enabling a live adapter requires the isolation, retention, deletion, provenance, and disclosure gates in [Professional product foundation](docs/PROFESSIONALIZATION_PLAN.md).
 
 ## Security and privacy model
 
@@ -138,6 +161,8 @@ npm run typecheck
 npm run lint
 npm test
 npm run test:e2e
+# or run the non-browser checks together
+npm run check
 ```
 
 `npm test` performs a production build before running the unit and integration suite. Playwright runs mobile and desktop projects against a fresh production server by default.
@@ -151,3 +176,8 @@ npm run test:e2e
 - [V2 implementation summary](docs/V2_IMPLEMENTATION_SUMMARY.md)
 - [Image pipeline](docs/V2_IMAGE_PIPELINE.md)
 - [Privacy notes](docs/V2_PRIVACY_NOTES.md)
+- [Professional product foundation](docs/PROFESSIONALIZATION_PLAN.md)
+- [Provider development](docs/PROVIDER_DEVELOPMENT.md)
+- [Privacy and retention](docs/PRIVACY_RETENTION.md)
+- [Migration and rollback guide](docs/MIGRATIONS.md)
+- [Architecture decisions](docs/adr/0001-open-meteo-weather.md)

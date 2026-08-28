@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a focused product or provider improvement.
+title: "[Proposal]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: user_problem
+    attributes:
+      label: User problem
+      description: What decision becomes easier, safer, or more trustworthy?
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed approach and fallbacks
+      description: Include credential-free behavior, failure states, and feature flags.
+    validations:
+      required: true
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Data and privacy impact
+      description: What data is collected, where is it stored, and how is it deleted?
+    validations:
+      required: true
