@@ -16,3 +16,7 @@ Security fixes target the default branch. Demo mode is the only credential-free 
 - Signed URLs are short-lived and must not be logged.
 - Provider credentials are server-only; flags alone are not authorization.
 - Account and media deletion failures remain retryable and observable.
+
+## Dependency audit note
+
+As of 2026-08-27, `npm audit --omit=dev` reports no known production dependency vulnerabilities. The full audit retains four moderate advisories in the legacy `drizzle-kit` development-server chain. npm's proposed automatic fix is a breaking downgrade, so it is not applied. Do not expose development tooling to untrusted networks; Dependabot and CI are configured so this exception can be removed when the migration toolchain offers a compatible fix.
