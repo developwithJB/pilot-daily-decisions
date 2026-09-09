@@ -43,3 +43,11 @@ The public deployment remains a deterministic, non-persistent demonstration. Aut
 The code is designed to deploy with the combined bundle disabled. Production activation requires public Supabase configuration, application of migrations `0001`–`0005`, a two-user RLS/Storage rehearsal, migration sign-off, and a final production smoke test. Live AI try-on and production 3D generation stay off. The public Sites host remains a non-persistent preview; widening access does not activate the authenticated bundle.
 
 The protected retention endpoint is implemented, but the hosting platform does not supply a scheduler in this repository. An external scheduler using `CRON_SECRET` must be configured and smoke-tested before the authenticated bundle is activated.
+
+## 2026-09-09 — Syndy Studio V2
+
+- Added a standalone, reproducible generated-video fitting studio with public fictional sample media, two outfits, rotation, shoe/detail inspection, custom environments, local saves and PNG snapshots.
+- Connected daily weather and calendar context to sample-look suggestions. Google sync uses the existing authenticated API; manual and ICS modes remain available without credentials.
+- Fixed Open-Meteo timestamp handling by requesting Unix times and formatting hourly labels in the forecast timezone.
+- Expanded setup, limitations, media authoring, Google OAuth and local-preview documentation with actual browser screenshots.
+- Validation: 32 unit/integration tests and 16 existing browser tests passed; two invite-only browser cases skipped in default preview mode. Real-account Google OAuth remains an operator configuration/integration step.

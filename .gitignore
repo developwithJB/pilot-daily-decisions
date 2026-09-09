@@ -42,3 +42,7 @@ yarn-error.log*
 /outputs/
 /work/
 *.tsbuildinfo
+
+# Personal Studio media and local generation records
+/examples/syndy-v2/private/
+/examples/syndy-v2/generation-manifest.json

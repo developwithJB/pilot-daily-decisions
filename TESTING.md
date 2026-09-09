@@ -47,3 +47,17 @@ Rollback is a rebuild with the combined flag false. Do not revert additive migra
 4. Keep `NEXT_PUBLIC_ROADMAP_BUNDLE_ENABLED=false` and `LIVE_TRY_ON_ENABLED=false` for the public story. Do not make Calendar, scanning, shopping vision, or live generation part of the critical five-minute path.
 5. Keep the local production server and recorded video ready. If the network drops, switch immediately and do not reload the already-open deployed tab.
 6. Audience hands-on access requires an explicit Sites access change or pre-provisioning; owner-only access supports presenter-led use only.
+
+## Syndy Studio V2
+
+`npm run check` also builds the standalone Studio. Unit tests in `tests/syndy-v2.test.mjs` exercise day/timezone boundaries, exclusive all-day ends, weather/occasion sample selection, the Google API response contract, minimization of events, and the signed-in boundary.
+
+For interactive validation, run `npm run dev:v2` and check:
+
+1. Live city weather, manual fallback, and a 74°F / 0% rain + Dinner suggestion selecting Evening.
+2. An ICS import with today’s Office and Dinner events; raw titles/guests/descriptions must not render. Recurring/TZID exports must be rejected with instructions.
+3. A running unconfigured Pilot backend returns the Google sign-in/setup state, never a fake connected state. A real configured account requires the operator OAuth rehearsal.
+4. Both media clips rotate through front, side and back with full head/shoe framing; detail and shoe zooms, play/pause, slider and keyboard controls work.
+5. All environments, local image upload, snapshot export, saved look after reload, expand/Escape, and 390px mobile layout.
+
+The public screenshot set uses fictional generated models and actual local UI. It contains no private Google events or Sydney reference photos. These Studio checks are a manual browser pass; the existing `test:e2e` command covers the separate Pilot app.

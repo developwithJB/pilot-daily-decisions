@@ -40,7 +40,7 @@ type OpenMeteoForecast = {
     wind_speed_10m: number;
   };
   hourly: {
-    time: string[];
+    time: Array<string | number>;
     temperature_2m: number[];
     apparent_temperature: number[];
     precipitation_probability: number[];
@@ -48,15 +48,16 @@ type OpenMeteoForecast = {
   daily: { temperature_2m_max: number[] };
 };
 
-const labelHour = (iso: string, timezone: string) =>
-  new Intl.DateTimeFormat("en-US", { hour: "numeric", timeZone: timezone }).format(new Date(iso));
+const timestamp = (value: string | number) => new Date(typeof value === "number" ? value * 1000 : value);
+const labelHour = (iso: string | number, timezone: string) =>
+  new Intl.DateTimeFormat("en-US", { hour: "numeric", timeZone: timezone }).format(timestamp(iso));
 
 export function normalizeOpenMeteo(
   payload: OpenMeteoForecast,
   location: string,
   now = new Date(),
 ): ProviderResult<WeatherContextV1> {
-  const start = Math.max(0, payload.hourly.time.findIndex((item) => new Date(item).getTime() >= now.getTime()));
+  const start = Math.max(0, payload.hourly.time.findIndex((item) => timestamp(item).getTime() >= now.getTime()));
   const sample = [start, start + 4, start + 8, start + 12].filter((index) => payload.hourly.time[index]);
   const window = payload.hourly.precipitation_probability.slice(start, start + 24);
   const eveningIndex = payload.hourly.time.findIndex((item, index) => index >= start && labelHour(item, payload.timezone).startsWith("6 PM"));
@@ -138,6 +139,7 @@ export class OpenMeteoWeatherProvider implements WeatherProvider {
       temperature_unit: "fahrenheit",
       wind_speed_unit: "mph",
       timezone: "auto",
+      timeformat: "unixtime",
       forecast_days: "2",
     }).toString();
     return normalizeOpenMeteo(await fetchJson<OpenMeteoForecast>(forecast), location);
